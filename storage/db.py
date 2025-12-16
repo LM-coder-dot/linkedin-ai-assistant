@@ -9,12 +9,14 @@ def init_db():
     cur.execute("""
     CREATE TABLE IF NOT EXISTS posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        text TEXT UNIQUE,
+        text TEXT,
         language TEXT,
         relevance INTEGER,
         highlight INTEGER,
         decision TEXT,
-        comment TEXT
+        comment TEXT,
+        author TEXT,
+        post_url TEXT
     )
     """)
 
@@ -23,23 +25,20 @@ def init_db():
     conn.close()
 
 
-def save_post(text, analysis, decision, comment=None, author=None, post_url=None):
+def save_post(text, language, relevance, highlight, decision, comment, author, post_url):
+    conn = sqlite3.connect("storage/posts.db")
+    cur = conn.cursor()
+
     cur.execute("""
-        INSERT INTO posts (text, language, relevance, highlight, decision, comment, author, post_url)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO posts (
+        text, language, relevance, highlight, decision, comment, author, post_url
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        text,
-        analysis["language"],
-        analysis["relevance_score"],
-        analysis["highlight_score"],
-        decision,
-        comment,
-        author,
-        post_url
+        text, language, relevance, highlight, decision, comment, author, post_url
     ))
+
     conn.commit()
     conn.close()
-
 
 
 def get_posts(decision=None, min_relevance=0):

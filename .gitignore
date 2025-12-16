@@ -1,7 +1,23 @@
-.venv/
-*.db
-*.sqlite
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+.venv/
+venv/
+
+# Streamlit
 .streamlit/
+
+# SQLite DB
+*.db
+
+# Secrets / Sessions
+linkedin_session.json
 .env
+
+# OS
+.DS_Store
+Thumbs.db

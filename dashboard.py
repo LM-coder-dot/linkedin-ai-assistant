@@ -47,6 +47,8 @@ for idx, row in enumerate(posts):
         st.markdown("---")
         st.markdown(f"**Entscheidung:** `{decision.upper()}`")
         st.markdown(f"**Sprache:** {language} | **Relevanz:** {relevance} | **Highlight:** {highlight}")
+        st.markdown(f"**Verfasser:** {author}")
+        st.markdown(f"**Link zum Post:** [Zum LinkedIn-Post]({post_url})")
         st.write(text)
 
         # Zusatzinfos

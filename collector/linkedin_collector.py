@@ -1,18 +1,19 @@
-import requests
-
 class LinkedInCollector:
-    def __init__(self):
-        # Platz für Authentifizierung / Session
-        pass
-
-    def fetch_feed(self):
-        """
-        Platzhalter-Methode, um Beiträge zu sammeln.
-        Später: Filter nach Thema, Sichtbarkeit, Sprache.
-        """
-        print("Feed wird gesammelt...")
+    def collect_feed(self):
         return [
-            "FinTech und AI verändern die Banking-Welt massiv.",
-            "Die neuesten Trends in Digital Market und Kryptowährungen.",
-            "Ein unauffälliger Beitrag ohne Relevanz."
+            {
+                "text": "FinTech und AI verändern die Banking-Welt massiv.",
+                "author": "Anna Müller – FinTech Strategy",
+                "post_url": "https://www.linkedin.com/posts/example1",
+            },
+            {
+                "text": "Die neuesten Trends in Digital Market und Kryptowährungen.",
+                "author": "Max Becker | Digital Banking",
+                "post_url": "https://www.linkedin.com/posts/example2",
+            },
+            {
+                "text": "Ein unauffälliger Beitrag ohne Relevanz.",
+                "author": "Random User",
+                "post_url": "https://www.linkedin.com/posts/example3",
+            }
         ]

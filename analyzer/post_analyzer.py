@@ -1,25 +1,25 @@
-import random
+def analyze_post(text: str) -> dict:
+    text_lower = text.lower()
 
-def analyze_post(post_text: str):
-    """
-    Dummy-Analyse für Testing:
-    - Sprache: "de" oder "en"
-    - Relevanzscore 0–10
-    - Highlightscore 0–10
-    """
-    
-    # Sprache erkennen
-    if any(word in post_text.lower() for word in ["the", "and", "is", "ai", "bank"]):
+    relevance = 0
+    highlight = 0
+
+    keywords = ["ai", "künstlich", "fintech", "crypto", "bank", "automation"]
+
+    for kw in keywords:
+        if kw in text_lower:
+            relevance += 2
+            highlight += 1
+
+    relevance = min(relevance, 10)
+    highlight = min(highlight, 10)
+
+    language = "de"
+    if any(word in text_lower for word in ["the", "and", "is"]):
         language = "en"
-    else:
-        language = "de"
-    
-    # zufällige Scores
-    relevance_score = random.randint(0, 10)
-    highlight_score = random.randint(0, 10)
-    
+
     return {
         "language": language,
-        "relevance_score": relevance_score,
-        "highlight_score": highlight_score
+        "relevance": relevance,
+        "highlight": highlight
     }

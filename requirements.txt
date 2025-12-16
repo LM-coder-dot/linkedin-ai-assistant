@@ -1,0 +1,10 @@
+playwright
+streamlit
+langdetect
+requests
+sqlite-utils
+playwright
+streamlit
+langdetect
+requests
+sqlite-utils

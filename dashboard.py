@@ -41,12 +41,24 @@ for idx, row in enumerate(posts):
     comment = row[5] if len(row) > 5 else None
     author = row[6] if len(row) > 6 else "Unbekannt"
     post_url = row[7] if len(row) > 7 else None
+    # Relevanz visuell aufbereiten
+    relevance_label = "🟢 hoch" if relevance >= 7 else "🟡 mittel" if relevance >= 4 else "🔴 niedrig"
 
     # Container für jeden Post
     with st.container():
         st.markdown("---")
         st.markdown(f"**Entscheidung:** `{decision.upper()}`")
-        st.markdown(f"**Sprache:** {language} | **Relevanz:** {relevance} | **Highlight:** {highlight}")
+        st.markdown(
+            f"""
+            **Text:** {row['text']}
+            **Autor:** {row.get('author', '–')}  
+            **Sprache:** {row['language']}  
+            **Relevanz:** {row['relevance']} / 10  
+            **Highlight:** {row['highlight']} 
+            **Entscheidung:** {row['decision']}
+            """
+        )
+        st.progress(relevance / 10)
         st.markdown(f"**Verfasser:** {author}")
         st.markdown(f"**Link zum Post:** [Zum LinkedIn-Post]({post_url})")
         st.write(text)

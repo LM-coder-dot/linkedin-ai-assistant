@@ -17,6 +17,7 @@ venv/
 # Secrets / Sessions
 linkedin_session.json
 .env
+.env*
 
 # OS
 .DS_Store

@@ -1,15 +1,15 @@
 import random
 
 GERMAN_TEMPLATES = [
-    "Spannende Perspektive! Gerade im Kontext von {topic} sieht man aktuell viel Bewegung.",
-    "Sehr relevanter Punkt – besonders wenn man die Entwicklungen in {topic} betrachtet.",
-    "Das Thema {topic} wird definitiv unterschätzt. Danke fürs Teilen!"
+    "Spannender Beitrag! Gerade im Kontext von {topic} ein sehr relevanter Punkt.",
+    "Danke fürs Teilen – {topic} wird aktuell oft unterschätzt.",
+    "Sehr interessanter Gedanke. Besonders mit Blick auf {topic}.",
 ]
 
 ENGLISH_TEMPLATES = [
-    "Very interesting perspective! Especially in the context of {topic}.",
-    "Great point – we see a lot of momentum around {topic} right now.",
-    "This is a highly relevant topic, particularly when looking at {topic} trends."
+    "Very interesting perspective – especially in the context of {topic}.",
+    "Great insight! {topic} is becoming more important than many realize.",
+    "Thanks for sharing – this adds valuable context around {topic}.",
 ]
 
 
@@ -19,16 +19,18 @@ def detect_topic(text: str) -> str:
     if "fintech" in text:
         return "FinTech"
     if "ai" in text or "artificial intelligence" in text:
-        return "AI in Finance"
+        return "AI"
     if "bank" in text or "banking" in text:
-        return "Banking"
+        return "banking"
+    if "crypto" in text:
+        return "cryptocurrencies"
     if "digital" in text or "market" in text:
-        return "Digital Markets"
+        return "digital markets"
 
-    return "the financial sector"
+    return "this topic"
 
 
-def generate_comment(post_text: str, language: str) -> str:
+def generate_comment(post_text: str, language: str = "en") -> str:
     topic = detect_topic(post_text)
 
     if language == "de":

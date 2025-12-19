@@ -1,25 +1,24 @@
+from analyzer.relevance_scorer import relevance_score
+from analyzer.language_detector import detect_language
+from analyzer.highlight_scorer import highlight_score
+
+
 def analyze_post(text: str) -> dict:
-    text_lower = text.lower()
+    if not text or not text.strip():
+        return {
+            "relevance": 0,
+            "language": "unknown",
+            "highlight": 0,
+            "keywords": []
+        }
 
-    relevance = 0
-    highlight = 0
-
-    keywords = ["ai", "künstlich", "fintech", "crypto", "bank", "automation"]
-
-    for kw in keywords:
-        if kw in text_lower:
-            relevance += 2
-            highlight += 1
-
-    relevance = min(relevance, 10)
-    highlight = min(highlight, 10)
-
-    language = "de"
-    if any(word in text_lower for word in ["the", "and", "is"]):
-        language = "en"
+    language = detect_language(text)
+    relevance, keywords = relevance_score(text)
+    highlight = highlight_score(text)
 
     return {
-        "language": language,
         "relevance": relevance,
-        "highlight": highlight
+        "language": language,
+        "highlight": highlight,
+        "keywords": keywords
     }

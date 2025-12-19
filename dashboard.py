@@ -32,16 +32,25 @@ if not posts:
 
 # --- Posts anzeigen ---
 for idx, row in enumerate(posts):
-    text, language, relevance, highlight, decision, comment, author, post_url = row
+    # tuple → sicher auslesen
+    text = row[0]
+    language = row[1] if len(row) > 1 else "N/A"
+    relevance = int(row[2]) if len(row) > 2 and row[2] is not None else 0
+    highlight = int(row[3]) if len(row) > 3 and row[3] is not None else 0
+    decision = row[4] if len(row) > 4 else "N/A"
+    comment = row[5] if len(row) > 5 else None
+    author = row[6] if len(row) > 6 else "Unbekannt"
+    post_url = row[7] if len(row) > 7 else None
 
-    relevance = relevance or 0
-    highlight = highlight or 0
+
+    relevance = int(row[2]) if len(row) > 2 and row[2] is not None else 0
+    highlight = int(row[3]) if len(row) > 3 and row[3] is not None else 0
 
     relevance_label = (
-        "🟢 hoch" if relevance >= 7 else
-        "🟡 mittel" if relevance >= 4 else
-        "🔴 niedrig"
-    )
+    "🟢 hoch" if relevance >= 7 else
+    "🟡 mittel" if relevance >= 4 else
+    "🔴 niedrig"
+)
 
     highlight_label = (
         "🔥 hoch" if highlight >= highlight_threshold else
@@ -51,13 +60,12 @@ for idx, row in enumerate(posts):
     with st.container():
         st.markdown("---")
 
-        st.markdown(f"### 👤 {author or 'Unbekannt'}")
+        st.markdown(f"**Autor:** {author}")
         st.markdown(f"**Entscheidung:** `{decision.upper()}`")
-
-        st.markdown(f"**Relevanz:** {relevance}/10 {relevance_label}")
+        st.markdown(f"**Sprache:** {language}")
+        st.metric("🧠 Relevance", f"{relevance}/10", relevance_label)
         st.progress(relevance / 10)
-
-        st.markdown(f"**Highlight:** {highlight}/10 {highlight_label}")
+        st.metric("🔥 Highlight", f"{highlight}/10")
 
         if post_url:
             st.markdown(f"[🔗 Zum LinkedIn-Post]({post_url})")

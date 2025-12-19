@@ -46,7 +46,15 @@ def get_posts(decision=None, min_relevance=0):
     cur = conn.cursor()
 
     query = """
-        SELECT text, language, relevance, highlight, decision
+        SELECT
+        text,
+        language,
+        relevance,
+        highlight,
+        decision,
+        comment,
+        author,
+        post_url
         FROM posts
         WHERE relevance >= ?
     """

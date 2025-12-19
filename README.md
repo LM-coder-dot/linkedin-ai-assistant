@@ -39,3 +39,6 @@ storage/ # Persistenz
 ```bash
 pip install -r requirements.txt
 python run/run_pipeline.py
+
+⚠️ This project does not require API keys or billing.
+LinkedIn credentials must be provided via environment variables and are never committed.

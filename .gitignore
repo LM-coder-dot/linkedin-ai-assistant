@@ -18,7 +18,12 @@ venv/
 linkedin_session.json
 .env
 .env*
+*.key
+*.pem
+*.sqlite
 
 # OS
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/

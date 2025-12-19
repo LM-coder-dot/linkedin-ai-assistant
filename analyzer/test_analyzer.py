@@ -1,8 +1,10 @@
-from post_analyzer import PostAnalyzer
+from analyzer.post_analyzer import analyze_post
 
-analyzer = PostAnalyzer()
+def test_analyze_post_basic():
+    text = "AI is transforming banking. What do you think?"
+    result = analyze_post(text)
 
-test_post = "FinTech und AI verändern die Banking-Welt massiv."
-result = analyzer.analyze_post(test_post)
-
-print("Analyseergebnis:", result)
+    assert "relevance" in result
+    assert "highlight" in result
+    assert isinstance(result["relevance"], int)
+    assert isinstance(result["highlight"], int)

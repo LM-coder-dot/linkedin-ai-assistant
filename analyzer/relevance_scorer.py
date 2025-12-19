@@ -46,50 +46,15 @@ TIME_MARKERS = {
 MAX_SCORE = 10
 
 
-def relevance_score(text: str) -> tuple[int, dict]:
+def relevance_score(text: str) -> tuple[int, list[str]]:
     text_lower = text.lower()
     score = 0
-    signals = {
-        "topics": [],
-        "buzzwords": [],
-        "opinions": [],
-        "time": [],
-        "length": 0,
-    }
+    hits = []
 
-    # 1️⃣ Topics
-    for word, weight in TOPICS.items():
-        if word in text_lower:
-            score += weight
-            signals["topics"].append(word)
+    for kw in ["ai", "bank", "banking", "fintech", "transform"]:
+        if kw in text_lower:
+            score += 1
+            hits.append(kw)
 
-    # 2️⃣ Buzzwords
-    for word, weight in BUZZWORDS.items():
-        if word in text_lower:
-            score += weight
-            signals["buzzwords"].append(word)
+    return min(score, 10), hits
 
-    # 3️⃣ Meinung
-    for phrase, weight in OPINION_MARKERS.items():
-        if phrase in text_lower:
-            score += weight
-            signals["opinions"].append(phrase)
-
-    # 4️⃣ Aktualität
-    for phrase, weight in TIME_MARKERS.items():
-        if phrase in text_lower:
-            score += weight
-            signals["time"].append(phrase)
-
-    # 5️⃣ Textlänge
-    word_count = len(text.split())
-    if word_count >= 30:
-        score += 2
-        signals["length"] = 2
-    elif word_count >= 12:
-        score += 1
-        signals["length"] = 1
-
-    score = min(score, MAX_SCORE)
-
-    return score, signals

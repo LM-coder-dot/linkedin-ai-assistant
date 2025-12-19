@@ -1,3 +1,9 @@
+import os
+
+cookie = os.getenv("LINKEDIN_COOKIE")
+if not cookie:
+    raise RuntimeError("LINKEDIN_COOKIE not set")
+
 class LinkedInCollector:
     def collect_feed(self):
         return [

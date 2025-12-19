@@ -1,3 +1,9 @@
+import os
+import pytest
+
+if not os.getenv("LINKEDIN_COOKIE"):
+    pytest.skip("LINKEDIN_COOKIE not set", allow_module_level=True)
+
 from collector.linkedin_collector import LinkedInCollector
 from analyzer.post_analyzer import PostAnalyzer
 from recommender.interaction_recommender import InteractionRecommender

@@ -32,45 +32,41 @@ if not posts:
 
 # --- Posts anzeigen ---
 for idx, row in enumerate(posts):
-    # Spalten robust auslesen
-    text = row[0]
-    language = row[1] if len(row) > 1 else "N/A"
-    relevance = row[2] if len(row) > 2 else 0
-    highlight = row[3] if len(row) > 3 else 0
-    decision = row[4] if len(row) > 4 else "N/A"
-    comment = row[5] if len(row) > 5 else None
-    author = row[6] if len(row) > 6 else "Unbekannt"
-    post_url = row[7] if len(row) > 7 else None
-    # Relevanz visuell aufbereiten
-    relevance_label = "🟢 hoch" if relevance >= 7 else "🟡 mittel" if relevance >= 4 else "🔴 niedrig"
+    text, language, relevance, highlight, decision, comment, author, post_url = row
 
-    # Container für jeden Post
+    relevance = relevance or 0
+    highlight = highlight or 0
+
+    relevance_label = (
+        "🟢 hoch" if relevance >= 7 else
+        "🟡 mittel" if relevance >= 4 else
+        "🔴 niedrig"
+    )
+
+    highlight_label = (
+        "🔥 hoch" if highlight >= highlight_threshold else
+        "😐 normal"
+    )
+
     with st.container():
         st.markdown("---")
+
+        st.markdown(f"### 👤 {author or 'Unbekannt'}")
         st.markdown(f"**Entscheidung:** `{decision.upper()}`")
-        st.markdown(
-            f"""
-            **Text:** {row['text']}
-            **Autor:** {row.get('author', '–')}  
-            **Sprache:** {row['language']}  
-            **Relevanz:** {row['relevance']} / 10  
-            **Highlight:** {row['highlight']} 
-            **Entscheidung:** {row['decision']}
-            """
-        )
+
+        st.markdown(f"**Relevanz:** {relevance}/10 {relevance_label}")
         st.progress(relevance / 10)
-        st.markdown(f"**Verfasser:** {author}")
-        st.markdown(f"**Link zum Post:** [Zum LinkedIn-Post]({post_url})")
+
+        st.markdown(f"**Highlight:** {highlight}/10 {highlight_label}")
+
+        if post_url:
+            st.markdown(f"[🔗 Zum LinkedIn-Post]({post_url})")
+
+        st.markdown("**Post-Inhalt:**")
         st.write(text)
 
-        # Zusatzinfos
-        st.markdown(f"**Verfasser:** {author}")
-        if post_url:
-            st.markdown(f"**Link zum Post:** [Hier klicken]({post_url})")
-
-        # Kommentar-Vorschlag
         if comment:
-            st.markdown("**Kommentar-Vorschlag:**")
+            st.markdown("**💬 Kommentar-Vorschlag:**")
             st.info(comment)
             st.button(
                 "📋 Kommentar kopieren",
@@ -78,13 +74,35 @@ for idx, row in enumerate(posts):
                 on_click=lambda c=comment: pyperclip.copy(c)
             )
 
-        # Repost-Vorschlag (falls Highlight hoch)
         if highlight >= highlight_threshold:
-            repost_text = f"Spannender Beitrag von {author}: \"{text[:200]}...\""
-            st.markdown("**Repost-Vorschlag:**")
+            repost_text = f"Spannender Beitrag von {author}: {text[:200]}..."
+            st.markdown("**🔁 Repost-Vorschlag:**")
             st.info(repost_text)
             st.button(
                 "📋 Repost-Text kopieren",
                 key=f"copy_repost_{idx}",
                 on_click=lambda t=repost_text: pyperclip.copy(t)
             )
+
+def render_dashboard(posts):
+    print("\n📊 LinkedIn AI Assistant – Dashboard\n")
+
+    for i, post in enumerate(posts, 1):
+        text, author, relevance, highlight, decision, comment, url = post
+
+        print(f"{i}. {author or 'Unbekannt'}")
+        print(f"   🧠 Relevance : {relevance}/10")
+        print(f"   🔥 Highlight : {highlight}/10")
+        print(f"   🎯 Decision  : {decision}")
+        print(f"   📝 Text      : {text[:120]}...")
+        print("-" * 60)
+
+def score_label(score):
+    if score >= 8:
+        return "🔥 sehr hoch"
+    if score >= 5:
+        return "👍 mittel"
+    return "😐 niedrig"
+
+print(f"   🧠 Relevance : {relevance}/10 ({score_label(relevance)})")
+print(f"   🔥 Highlight : {highlight}/10 ({score_label(highlight)})")

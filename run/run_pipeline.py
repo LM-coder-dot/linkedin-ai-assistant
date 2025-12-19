@@ -7,7 +7,7 @@ from storage.db import init_db, save_post
 def main():
     collector = LinkedInCollector()
     init_db()
-
+    collector = LinkedInCollector()
     posts = collector.collect_feed()
 
     for post in posts:

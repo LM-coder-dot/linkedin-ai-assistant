@@ -1,6 +1,11 @@
 import os
 import psycopg2
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+def get_connection():
+    return psycopg2.connect(DATABASE_URL)
+
 DB_PATH = "storage/posts.db"
 
 def init_db():
@@ -46,36 +51,33 @@ def save_post(text, language, relevance, highlight, decision, comment, author, p
 
 
 def get_posts(decision="all", min_relevance=0):
-    try:
-        def get_connection():
-            return psycopg2.connect(
-                os.getenv("DATABASE_URL"),
-                sslmode="require"
-            )
-        cur = conn.cursor()
-    except sqlite3.Error:
+    conn = get_connection()
+    cur = conn.cursor()
 
-     query = """
+    query = """
         SELECT
-        text,
-        language,
-        relevance,
-        highlight,
-        decision,
-        comment,
-        author,
-        post_url
+            text,
+            language,
+            relevance,
+            highlight,
+            decision,
+            comment,
+            author,
+            post_url
         FROM posts
         WHERE relevance >= ?
     """
     params = [min_relevance]
 
-    if decision and decision != "all":
+    if decision != "all":
         query += " AND decision = ?"
         params.append(decision)
 
+    query += " ORDER BY relevance DESC"
+
     cur.execute(query, params)
     rows = cur.fetchall()
-    conn.close()
 
-    return []  # <- WICHTIG für Streamlit Cloud
+    conn.close()
+    return rows
+

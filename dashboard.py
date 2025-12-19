@@ -25,13 +25,6 @@ highlight_threshold = st.sidebar.slider(
 
 # --- Posts abrufen ---
 posts = get_posts(decision=decision_filter, min_relevance=min_relevance)
-    cur.execute("""
-        SELECT text, language, relevance, highlight,
-               decision, comment, author, post_url
-        FROM posts
-        WHERE relevance >= %s
-    """, (min_relevance,))
-
 st.write(f"### Gefundene Posts: {len(posts)}")
 
 if not posts:
@@ -39,57 +32,48 @@ if not posts:
 
 # --- Posts anzeigen ---
 for idx, row in enumerate(posts):
-    text, language, relevance, highlight, decision, comment, author, post_url = row
+    (
+        text,
+        language,
+        relevance,
+        highlight,
+        decision,
+        comment,
+        author,
+        post_url,
+    ) = row
 
-    relevance = int(relevance)
-    highlight = int(highlight)
-
+    relevance = int(relevance or 0)
+    highlight = int(highlight or 0)
 
     relevance_label = (
-    "🟢 hoch" if relevance >= 7 else
-    "🟡 mittel" if relevance >= 4 else
-    "🔴 niedrig"
-)
-
-    highlight_label = (
-        "🔥 hoch" if highlight >= highlight_threshold else
-        "😐 normal"
+        "🟢 hoch" if relevance >= 7
+        else "🟡 mittel" if relevance >= 4
+        else "🔴 niedrig"
     )
 
     with st.container():
         st.markdown("---")
+        st.markdown(f"### {relevance_label} · `{decision.upper()}`")
+        st.write(text)
 
-        st.markdown(f"**Autor:** {author}")
-        st.markdown(f"**Entscheidung:** `{decision.upper()}`")
-        st.markdown(f"**Sprache:** {language}")
-        st.metric("🧠 Relevance", f"{relevance}/10", relevance_label)
+        st.markdown(
+            f"""
+            **Autor:** {author or '–'}  
+            **Sprache:** {language}  
+            **Relevanz:** {relevance}/10  
+            **Highlight:** {highlight}/10  
+            """
+        )
+
         st.progress(relevance / 10)
-        st.metric("🔥 Highlight", f"{highlight}/10")
 
         if post_url:
             st.markdown(f"[🔗 Zum LinkedIn-Post]({post_url})")
 
-        st.markdown("**Post-Inhalt:**")
-        st.write(text)
-
         if comment:
-            st.markdown("**💬 Kommentar-Vorschlag:**")
             st.info(comment)
-            st.button(
-                "📋 Kommentar kopieren",
-                key=f"copy_comment_{idx}",
-                on_click=lambda c=comment: pyperclip.copy(c)
-            )
 
-        if highlight >= highlight_threshold:
-            repost_text = f"Spannender Beitrag von {author}: {text[:200]}..."
-            st.markdown("**🔁 Repost-Vorschlag:**")
-            st.info(repost_text)
-            st.button(
-                "📋 Repost-Text kopieren",
-                key=f"copy_repost_{idx}",
-                on_click=lambda t=repost_text: pyperclip.copy(t)
-            )
 
 def render_dashboard(posts):
     print("\n📊 LinkedIn AI Assistant – Dashboard\n")

@@ -1,4 +1,5 @@
 import sqlite3
+import os
 
 DB_PATH = "storage/posts.db"
 
@@ -8,17 +9,16 @@ def init_db():
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS posts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        text TEXT,
-        language TEXT,
-        relevance INTEGER,
-        highlight INTEGER,
-        decision TEXT,
-        comment TEXT,
-        author TEXT,
-        post_url TEXT
-    )
-    """)
+    text TEXT,
+    language TEXT,
+    relevance INTEGER,
+    highlight INTEGER,
+    decision TEXT,
+    comment TEXT,
+    author TEXT,
+    post_url TEXT
+)
+""")
 
 
     conn.commit()
@@ -41,11 +41,13 @@ def save_post(text, language, relevance, highlight, decision, comment, author, p
     conn.close()
 
 
-def get_posts(decision=None, min_relevance=0):
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
+def get_posts(decision="all", min_relevance=0):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+    except sqlite3.Error:
 
-    query = """
+     query = """
         SELECT
         text,
         language,
@@ -68,4 +70,4 @@ def get_posts(decision=None, min_relevance=0):
     rows = cur.fetchall()
     conn.close()
 
-    return rows
+    return []  # <- WICHTIG für Streamlit Cloud

@@ -1,10 +1,14 @@
-import sqlite3
 import os
+import psycopg2
 
 DB_PATH = "storage/posts.db"
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    def get_connection():
+        return psycopg2.connect(
+            os.getenv("DATABASE_URL"),
+            sslmode="require"
+        )
     cur = conn.cursor()
 
     cur.execute("""
@@ -43,7 +47,11 @@ def save_post(text, language, relevance, highlight, decision, comment, author, p
 
 def get_posts(decision="all", min_relevance=0):
     try:
-        conn = sqlite3.connect(DB_PATH)
+        def get_connection():
+            return psycopg2.connect(
+                os.getenv("DATABASE_URL"),
+                sslmode="require"
+            )
         cur = conn.cursor()
     except sqlite3.Error:
 

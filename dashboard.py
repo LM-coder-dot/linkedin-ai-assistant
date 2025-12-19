@@ -25,6 +25,13 @@ highlight_threshold = st.sidebar.slider(
 
 # --- Posts abrufen ---
 posts = get_posts(decision=decision_filter, min_relevance=min_relevance)
+    cur.execute("""
+        SELECT text, language, relevance, highlight,
+               decision, comment, author, post_url
+        FROM posts
+        WHERE relevance >= %s
+    """, (min_relevance,))
+
 st.write(f"### Gefundene Posts: {len(posts)}")
 
 if not posts:
@@ -32,19 +39,11 @@ if not posts:
 
 # --- Posts anzeigen ---
 for idx, row in enumerate(posts):
-    # tuple → sicher auslesen
-    text = row[0]
-    language = row[1] if len(row) > 1 else "N/A"
-    relevance = int(row[2]) if len(row) > 2 and row[2] is not None else 0
-    highlight = int(row[3]) if len(row) > 3 and row[3] is not None else 0
-    decision = row[4] if len(row) > 4 else "N/A"
-    comment = row[5] if len(row) > 5 else None
-    author = row[6] if len(row) > 6 else "Unbekannt"
-    post_url = row[7] if len(row) > 7 else None
+    text, language, relevance, highlight, decision, comment, author, post_url = row
 
+    relevance = int(relevance)
+    highlight = int(highlight)
 
-    relevance = int(row[2]) if len(row) > 2 and row[2] is not None else 0
-    highlight = int(row[3]) if len(row) > 3 and row[3] is not None else 0
 
     relevance_label = (
     "🟢 hoch" if relevance >= 7 else

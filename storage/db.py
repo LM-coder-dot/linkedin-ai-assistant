@@ -4,10 +4,9 @@ import psycopg2
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL not set")
-
 def get_connection():
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL not set")
     return psycopg2.connect(
         DATABASE_URL,
         sslmode="require"
@@ -18,7 +17,15 @@ def get_posts(decision="all", min_relevance=0):
     cur = conn.cursor()
 
     query = """
-        SELECT text, language, relevance, highlight, decision, comment, author, post_url
+        SELECT
+            text,
+            language,
+            relevance,
+            highlight,
+            decision,
+            comment,
+            author,
+            post_url
         FROM posts
         WHERE relevance >= %s
     """
@@ -28,12 +35,11 @@ def get_posts(decision="all", min_relevance=0):
         query += " AND decision = %s"
         params.append(decision)
 
-    query += " ORDER BY relevance DESC LIMIT 100"
+    query += " ORDER BY created_at DESC LIMIT 100"
 
     cur.execute(query, params)
     rows = cur.fetchall()
 
     cur.close()
     conn.close()
-
     return rows

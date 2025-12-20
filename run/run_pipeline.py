@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 from collector.linkedin_collector import LinkedInCollector
 from analyzer.post_analyzer import analyze_post
 from analyzer.relevance_scorer import relevance_score

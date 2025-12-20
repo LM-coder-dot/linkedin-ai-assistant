@@ -94,6 +94,3 @@ def score_label(score):
     if score >= 5:
         return "👍 mittel"
     return "😐 niedrig"
-
-print(f"   🧠 Relevance : {relevance}/10 ({score_label(relevance)})")
-print(f"   🔥 Highlight : {highlight}/10 ({score_label(highlight)})")

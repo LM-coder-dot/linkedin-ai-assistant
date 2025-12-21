@@ -50,5 +50,3 @@ def save_post(
     }
 
     supabase.table("posts").insert(data).execute()
-
-    return result

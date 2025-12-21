@@ -28,31 +28,27 @@ def get_posts(decision=None, min_relevance=0):
 
 def save_post(
     text: str,
+    language: str,
     relevance: int,
     highlight: int,
-    language: str,
-    decision: str,
+    decision: str | None = None,
     comment: str | None = None,
     author: str | None = None,
     post_url: str | None = None,
     keywords: list[str] | None = None,
 ):
-    """
-    Speichert einen Post in der Supabase-Tabelle `posts`.
-    """
-
     data = {
         "text": text,
+        "language": language,
         "relevance": relevance,
         "highlight": highlight,
-        "language": language,
         "decision": decision,
         "comment": comment,
         "author": author,
         "post_url": post_url,
-        "keywords": ",".join(keywords) if keywords else None,
+        "keywords": ",".join(keywords or []),
     }
 
-    result = supabase.table("posts").insert(data).execute()
+    supabase.table("posts").insert(data).execute()
 
     return result

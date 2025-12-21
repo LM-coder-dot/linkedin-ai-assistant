@@ -4,11 +4,10 @@ from collector.linkedin_collector import LinkedInCollector
 from analyzer.post_analyzer import analyze_post
 from analyzer.relevance_scorer import relevance_score
 from recommender.decision_engine import decide_action
-from storage.db import init_db, save_post
+from storage.db import save_post
 
 def main():
     collector = LinkedInCollector()
-    init_db()
     collector = LinkedInCollector()
     posts = collector.collect_feed()
 

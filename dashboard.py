@@ -32,16 +32,14 @@ if not posts:
 
 # --- Posts anzeigen ---
 for idx, row in enumerate(posts):
-    (
-        text,
-        language,
-        relevance,
-        highlight,
-        decision,
-        comment,
-        author,
-        post_url,
-    ) = row
+    text = row.get("text", "")
+    language = row.get("language", "N/A")
+    relevance = int(row.get("relevance") or 0)
+    highlight = int(row.get("highlight") or 0)
+    decision = row.get("decision", "N/A")
+    comment = row.get("comment")
+    author = row.get("author", "Unbekannt")
+    post_url = row.get("post_url")
 
     relevance = int(relevance or 0)
     highlight = int(highlight or 0)

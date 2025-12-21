@@ -22,7 +22,7 @@ def main():
         # 🔬 Weitere Analyse (Sprache, Highlight etc.)
         analysis = analyze_post(text)
         analysis["relevance"] = relevance
-        analysis["relevance_signals"] = relevance_signals
+        analysis["keywords"] = keywords
 
         # 🤖 Entscheidung
         decision, comment = decide_action(analysis)

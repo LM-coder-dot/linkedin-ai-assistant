@@ -14,7 +14,7 @@ def get_posts(decision=None, min_relevance=0):
         supabase
         .table("posts")
         .select(
-            "text, language, relevance, highlight, decision, comment, author, post_url"
+            "text, language, relevance, highlight, decision, comment, author, post_url, keywords"
         )
         .gte("relevance", min_relevance)
         .order("highlight", desc=True)
@@ -35,6 +35,7 @@ def save_post(
     comment: str | None = None,
     author: str | None = None,
     post_url: str | None = None,
+    keywords=",".join(keywords),
 ):
     """
     Speichert einen Post in der Supabase-Tabelle `posts`.
@@ -49,6 +50,7 @@ def save_post(
         "comment": comment,
         "author": author,
         "post_url": post_url,
+        "keywords": keywords,
     }
 
     result = supabase.table("posts").insert(data).execute()

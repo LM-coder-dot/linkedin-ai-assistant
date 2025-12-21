@@ -40,6 +40,7 @@ for idx, row in enumerate(posts):
     comment = row.get("comment")
     author = row.get("author", "Unbekannt")
     post_url = row.get("post_url")
+    keywords = row.get("keywords", "")
 
     relevance = int(relevance or 0)
     highlight = int(highlight or 0)
@@ -72,6 +73,8 @@ for idx, row in enumerate(posts):
         if comment:
             st.info(comment)
 
+        if keywords:
+            st.caption("🔍 Keywords: " + keywords)
 
 def render_dashboard(posts):
     print("\n📊 LinkedIn AI Assistant – Dashboard\n")

@@ -17,7 +17,7 @@ def main():
         post_url = post.get("post_url")
 
         # 🔎 Relevanz-Scoring
-        relevance, relevance_signals = relevance_score(text)
+        relevance, relevance_signals, keywords = relevance_score(text)
 
         # 🔬 Weitere Analyse (Sprache, Highlight etc.)
         analysis = analyze_post(text)
@@ -36,7 +36,8 @@ def main():
             decision=decision,
             comment=comment,
             author=author,
-            post_url=post_url
+            post_url=post_url,
+            keywords=keywords,  # 👈 NEU
         )
 
     print("✅ Pipeline inkl. Relevanz-Scoring abgeschlossen.")

@@ -45,16 +45,60 @@ TIME_MARKERS = {
 
 MAX_SCORE = 10
 
-
-def relevance_score(text: str) -> tuple[int, list[str]]:
+def relevance_score(text: str):
     text_lower = text.lower()
     score = 0
-    hits = []
+    hits = set()
 
-    for kw in ["ai", "bank", "banking", "fintech", "transform"]:
-        if kw in text_lower:
-            score += 1
-            hits.append(kw)
+    # 1️⃣ Topics
+    for t in TOPICS:
+        if t in text_lower:
+            hits.add(t)
+    if len(hits) >= 2:
+        score += 2
+    elif len(hits) == 1:
+        score += 1
 
-    return min(score, 10), hits
+    # 2️⃣ Buzzwords
+    buzz_hits = set()
+    for b in BUZZWORDS:
+        if b in text_lower:
+            buzz_hits.add(b)
+    hits |= buzz_hits
+    if len(buzz_hits) >= 2:
+        score += 2
+    elif len(buzz_hits) == 1:
+        score += 1
+
+    # 3️⃣ Textlänge
+    wc = len(text.split())
+    if wc >= 30:
+        score += 2
+    elif wc >= 12:
+        score += 1
+
+    # 4️⃣ Meinung
+    opinion_hits = set()
+    for o in OPINION_MARKERS:
+        if o in text_lower:
+            opinion_hits.add(o)
+    hits |= opinion_hits
+    if len(opinion_hits) >= 2:
+        score += 2
+    elif len(opinion_hits) == 1:
+        score += 1
+
+    # 5️⃣ Zeit
+    time_hits = set()
+    for t in TIME_MARKERS:
+        if t in text_lower:
+            time_hits.add(t)
+    hits |= time_hits
+    if len(time_hits) >= 2:
+        score += 2
+    elif len(time_hits) == 1:
+        score += 1
+
+    return min(score, 10), sorted(hits)
+
 

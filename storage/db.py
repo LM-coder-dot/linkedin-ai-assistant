@@ -35,7 +35,7 @@ def save_post(
     comment: str | None = None,
     author: str | None = None,
     post_url: str | None = None,
-    keywords=",".join(keywords),
+    keywords: list[str] | None = None,
 ):
     """
     Speichert einen Post in der Supabase-Tabelle `posts`.
@@ -50,7 +50,7 @@ def save_post(
         "comment": comment,
         "author": author,
         "post_url": post_url,
-        "keywords": keywords,
+        "keywords": ",".join(keywords) if keywords else None,
     }
 
     result = supabase.table("posts").insert(data).execute()

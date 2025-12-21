@@ -74,13 +74,14 @@ for idx, row in enumerate(posts):
             st.info(comment)
 
         if keywords:
-            st.caption("🔍 Keywords: " + keywords)
+            keyword_list = [k.strip() for k in keywords.split(",") if k.strip()]
+            st.caption("🔑 Keywords: " + ", ".join(keyword_list))
 
 def render_dashboard(posts):
     print("\n📊 LinkedIn AI Assistant – Dashboard\n")
 
     for i, post in enumerate(posts, 1):
-        text, author, relevance, highlight, decision, comment, url = post
+        text, language, author, relevance, highlight, decision, comment, url = post, keywords
 
         print(f"{i}. {author or 'Unbekannt'}")
         print(f"   🧠 Relevance : {relevance}/10")

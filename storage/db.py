@@ -1,43 +1,30 @@
 from supabase import create_client
 import os
 
-supabase = create_client(
-    os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_ANON_KEY"]
-)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+
+if not SUPABASE_URL or not SUPABASE_ANON_KEY:
+    raise RuntimeError("Supabase credentials not set")
+
+supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 def get_posts(decision=None, min_relevance=0):
-    conn = get_connection()
-    cur = conn.cursor()
-
-    query = """
-    SELECT
-        text,
-        language,
-        relevance,
-        highlight,
-        decision,
-        comment,
-        author,
-        post_url
-    FROM posts
-    WHERE COALESCE(relevance, 0) >= %s
-    """
-    params = [min_relevance]
+    query = (
+        supabase
+        .table("posts")
+        .select(
+            "text, language, relevance, highlight, decision, comment, author, post_url"
+        )
+        .gte("relevance", min_relevance)
+        .order("highlight", desc=True)
+    )
 
     if decision and decision != "all":
-        query += " AND decision = %s"
-        params.append(decision)
+        query = query.eq("decision", decision)
 
-    query += " ORDER BY highlight DESC NULLS LAST, relevance DESC NULLS LAST"
-
-    cur.execute(query, params)
-    rows = cur.fetchall()
-
-    cur.close()
-    conn.close()
-    return rows
-
+    response = query.execute()
+    return response.data or []
 
 def save_post(
     text: str,

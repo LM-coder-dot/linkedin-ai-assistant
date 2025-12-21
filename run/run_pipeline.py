@@ -17,7 +17,7 @@ def main():
         post_url = post.get("post_url")
 
         # 🔎 Relevanz-Scoring
-        relevance, relevance_signals, keywords = relevance_score(text)
+        relevance, keywords = relevance_score(text)
 
         # 🔬 Weitere Analyse (Sprache, Highlight etc.)
         analysis = analyze_post(text)

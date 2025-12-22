@@ -31,12 +31,12 @@ def save_post(
     language: str,
     relevance: int,
     highlight: str,
-    keywords=",".join(keywords) if keywords else None,
     decision: str,
-    decision_reason: str | None = None,
-    comment: str | None = None,
     author: str,
     post_url: str,
+    decision_reason: str | None = None,
+    comment: str | None = None,
+    keywords=",".join(keywords) if keywords else None,
 ):
     data = {
         "text": text,

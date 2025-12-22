@@ -9,12 +9,6 @@ if not SUPABASE_URL or not SUPABASE_ANON_KEY:
 
 supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-DECISION_COLORS = {
-    "auto_comment": "🟢",
-    "review": "🟡",
-    "ignore": "🔴",
-}
-
 def get_posts(decision=None, min_relevance=0):
     query = (
         supabase
@@ -33,16 +27,16 @@ def get_posts(decision=None, min_relevance=0):
     return response.data or []
 
 def save_post(
-    text,
-    language,
-    relevance,
-    highlight,
-    keywords,
-    decision,
-    decision_reason=None,
-    comment=None,
-    author=None,
-    post_url=None,
+    text: str,
+    language: str,
+    relevance: int,
+    highlight: str,
+    keywords=",".join(keywords) if keywords else None,
+    decision: str,
+    decision_reason: str | None = None,
+    comment: str | None = None,
+    author: str,
+    post_url: str,
 ):
     data = {
         "text": text,

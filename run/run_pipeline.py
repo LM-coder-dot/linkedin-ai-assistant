@@ -3,6 +3,7 @@ load_dotenv()
 from collector.linkedin_collector import LinkedInCollector
 from analyzer.post_analyzer import analyze_post
 from analyzer.relevance_scorer import relevance_score
+from analyzer.comment_generator import generate_comment
 from recommender.decision_engine import decide_action
 from storage.db import save_post
 from llm.comment_generator import generate_comment
@@ -27,6 +28,11 @@ def main():
 
         # 🧠 Entscheidung
         decision, decision_reason = decide_post(analysis)
+        comment = generate_comment(
+            text=text,
+            decision=decision,
+            keywords=analysis.get("keywords", []),
+        )
         analysis["decision"] = decision
         analysis["decision_reason"] = decision_reason
 
@@ -44,10 +50,10 @@ def main():
             language=analysis["language"],
             relevance=analysis["relevance"],
             highlight=analysis["highlight"],
-            keywords=analysis["keywords"],
+            keywords=analysis.get("keywords", []),
             decision=analysis["decision"],
             decision_reason=analysis["decision_reason"],
-            comment=analysis.get("comment"),
+            comment=comment,
             author=author,
             post_url=post_url,
         )

@@ -8,20 +8,7 @@ from storage.db import save_post
 from llm.comment_generator import generate_comment
 from analyzer.decision_engine import decide_post
 
-decision, decision_reason = decide_post(analysis)
-
-analysis["decision"] = decision
-analysis["decision_reason"] = decision_reason
-
-if decision == "comment":
-    analysis["comment"] = generate_comment(
-        text=text,
-        keywords=analysis["keywords"],
-        language=analysis["language"],
-    )
-
 def main():
-    collector = LinkedInCollector()
     collector = LinkedInCollector()
     posts = collector.collect_feed()
 
@@ -30,29 +17,28 @@ def main():
         author = post.get("author")
         post_url = post.get("post_url")
 
-        # 🔎 Relevanz-Scoring
+        # 🔎 Relevanz
         relevance, keywords = relevance_score(text)
 
-        # 🔬 Weitere Analyse (Sprache, Highlight etc.)
+        # 🔬 Analyse
         analysis = analyze_post(text)
         analysis["relevance"] = relevance
         analysis["keywords"] = keywords
 
-        # 🤖 Entscheidung
-        decision, comment = decide_action(analysis)
+        # 🧠 Entscheidung
         decision, decision_reason = decide_post(analysis)
         analysis["decision"] = decision
         analysis["decision_reason"] = decision_reason
 
-        # Optional: Kommentar
+        # 💬 Kommentar (optional)
         if decision == "comment":
             analysis["comment"] = generate_comment(
                 text=text,
-                keywords=analysis.get("keywords", []),
+                keywords=keywords,
                 language=analysis.get("language", "de"),
             )
 
-        # 💾 Speichern
+        # 💾 Persistenz
         save_post(
             text=text,
             language=analysis["language"],
@@ -66,8 +52,7 @@ def main():
             post_url=post_url,
         )
 
-    print("✅ Pipeline inkl. Relevanz-Scoring abgeschlossen.")
-
+    print("✅ Pipeline inkl. Decision Engine abgeschlossen.")
 
 if __name__ == "__main__":
     main()

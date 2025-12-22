@@ -40,7 +40,7 @@ for idx, row in enumerate(posts):
     comment = row.get("comment")
     author = row.get("author", "Unbekannt")
     post_url = row.get("post_url")
-    keywords = row.get("keywords", "")
+    keywords = row["keywords"].split(",") if row["keywords"] else []
 
     relevance = int(relevance or 0)
     highlight = int(highlight or 0)
@@ -65,30 +65,41 @@ for idx, row in enumerate(posts):
             """
         )
 
-        st.progress(relevance / 10)
+        st.progress(min(relevance / 10, 1.0))
+        st.success(f"Decision: {decision}")
+        st.caption(f"Reason: {decision_reason}")
 
         if post_url:
             st.markdown(f"[🔗 Zum LinkedIn-Post]({post_url})")
 
         if comment:
+            st.markdown("**💬 Kommentar-Vorschlag:**")
             st.info(comment)
 
+        if decision == "repost":
+            repost_text = f"Starker Beitrag von {author}: {text[:200]}…"
+            st.markdown("**🔁 Repost-Vorschlag:**")
+            st.info(repost_text)
+
         if keywords:
-            keyword_list = [k.strip() for k in keywords.split(",") if k.strip()]
-            st.caption("🔑 Keywords: " + ", ".join(keyword_list))
+            st.caption("Keywords: " + ", ".join(keywords))
+        else:
+            st.caption("Keywords: –")
 
-def render_dashboard(posts):
-    print("\n📊 LinkedIn AI Assistant – Dashboard\n")
+        st.markdown(
+            f"### {DECISION_COLORS.get(decision, '')} {decision.upper()}"
+        )
 
-    for i, post in enumerate(posts, 1):
-        text, language, author, relevance, highlight, decision, comment, url = post, keywords
+        DECISION_COLORS = {
+            "ignore": "⚪",
+            "like": "👍",
+            "comment": "💬",
+            "repost": "🔁",
+        }
 
-        print(f"{i}. {author or 'Unbekannt'}")
-        print(f"   🧠 Relevance : {relevance}/10")
-        print(f"   🔥 Highlight : {highlight}/10")
-        print(f"   🎯 Decision  : {decision}")
-        print(f"   📝 Text      : {text[:120]}...")
-        print("-" * 60)
+        col1, col2 = st.columns(2)
+        col1.metric("🧠 Relevance", relevance)
+        col2.metric("🔥 Highlight", highlight)
 
 def score_label(score):
     if score >= 8:
@@ -96,3 +107,12 @@ def score_label(score):
     if score >= 5:
         return "👍 mittel"
     return "😐 niedrig"
+
+def test_decision_repost():
+    decision, _ = decide_post({
+        "relevance": 8,
+        "highlight": 8,
+        "keywords": ["AI", "Strategy"],
+        "language": "en",
+    })
+    assert decision == "repost"

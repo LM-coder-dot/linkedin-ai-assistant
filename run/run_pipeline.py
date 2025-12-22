@@ -5,6 +5,20 @@ from analyzer.post_analyzer import analyze_post
 from analyzer.relevance_scorer import relevance_score
 from recommender.decision_engine import decide_action
 from storage.db import save_post
+from llm.comment_generator import generate_comment
+from analyzer.decision_engine import decide_post
+
+decision, decision_reason = decide_post(analysis)
+
+analysis["decision"] = decision
+analysis["decision_reason"] = decision_reason
+
+if decision == "comment":
+    analysis["comment"] = generate_comment(
+        text=text,
+        keywords=analysis["keywords"],
+        language=analysis["language"],
+    )
 
 def main():
     collector = LinkedInCollector()
@@ -12,7 +26,7 @@ def main():
     posts = collector.collect_feed()
 
     for post in posts:
-        text = post.get("text", "")
+        text = post["text"]
         author = post.get("author")
         post_url = post.get("post_url")
 
@@ -26,18 +40,30 @@ def main():
 
         # 🤖 Entscheidung
         decision, comment = decide_action(analysis)
+        decision, decision_reason = decide_post(analysis)
+        analysis["decision"] = decision
+        analysis["decision_reason"] = decision_reason
+
+        # Optional: Kommentar
+        if decision == "comment":
+            analysis["comment"] = generate_comment(
+                text=text,
+                keywords=analysis.get("keywords", []),
+                language=analysis.get("language", "de"),
+            )
 
         # 💾 Speichern
         save_post(
             text=text,
-            relevance=relevance,
-            highlight=analysis.get("highlight", 0),
-            language=analysis.get("language", "de"),
-            decision=decision,
-            comment=comment,
+            language=analysis["language"],
+            relevance=analysis["relevance"],
+            highlight=analysis["highlight"],
+            keywords=analysis["keywords"],
+            decision=analysis["decision"],
+            decision_reason=analysis["decision_reason"],
+            comment=analysis.get("comment"),
             author=author,
             post_url=post_url,
-            keywords=keywords,  # 👈 NEU
         )
 
     print("✅ Pipeline inkl. Relevanz-Scoring abgeschlossen.")

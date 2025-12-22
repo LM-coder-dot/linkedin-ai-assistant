@@ -36,18 +36,19 @@ def save_post(
     post_url: str,
     decision_reason: str | None = None,
     comment: str | None = None,
-    keywords=",".join(keywords) if keywords else None,
+    keywords: list[str] | None = None,
 ):
     data = {
         "text": text,
         "language": language,
         "relevance": relevance,
         "highlight": highlight,
-        "keywords": keywords,
         "decision": decision,
         "decision_reason": decision_reason,
         "comment": comment,
         "author": author,
         "post_url": post_url,
+        "keywords": ",".join(keywords) if keywords else None,
     }
+
     supabase.table("posts").insert(data).execute()

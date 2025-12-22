@@ -2,8 +2,8 @@ name: LinkedIn Pipeline
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
-  workflow_dispatch:
+    - cron: "0 */6 * * *"   # alle 6 Stunden
+  workflow_dispatch:       # manuell startbar
 
 jobs:
   run-pipeline:
@@ -16,16 +16,17 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run pipeline
         env:
           LINKEDIN_COOKIE: ${{ secrets.LINKEDIN_COOKIE }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           python -m run.run_pipeline

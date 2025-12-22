@@ -29,15 +29,19 @@ def detect_topic(text: str) -> str:
 
     return "this topic"
 
+def generate_comment(
+    text: str,
+    decision: str,
+    relevance: int,
+    keywords: list[str] | None = None,
+) -> str:
 
-def generate_comment(text: str, keywords: list[str], language: str) -> str:
-    if language == "de":
-        return (
-            f"Spannender Punkt zu {', '.join(keywords[:2])}. "
-            "Gerade in diesem Kontext ein wichtiges Thema – danke fürs Teilen!"
-        )
+    keywords_hint = ""
+    if keywords:
+        keywords_hint = f" Themen: {', '.join(keywords)}."
 
     return (
-        f"Interesting perspective on {', '.join(keywords[:2])}. "
-        "This is becoming increasingly relevant – thanks for sharing!"
+        f"Spannender Beitrag zum Thema {decision}. "
+        f"Gerade im Kontext von Relevanz {relevance}/10 sehr interessant."
+        f"{keywords_hint}"
     )

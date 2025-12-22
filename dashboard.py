@@ -94,7 +94,7 @@ for idx, row in enumerate(posts):
             st.caption("Keywords: –")
 
         st.markdown(
-            f"### {DECISION_COLORS.get(decision, '')} {decision.upper()}"
+            f"### {DECISION_COLORS.get(decision, '⚪')} {decision.upper()}"
         )
 
         DECISION_COLORS = {

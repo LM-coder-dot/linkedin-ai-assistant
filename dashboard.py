@@ -37,6 +37,7 @@ for idx, row in enumerate(posts):
     relevance = int(row.get("relevance") or 0)
     highlight = int(row.get("highlight") or 0)
     decision = row.get("decision", "N/A")
+    decision_reason = row.get("decision", "N/A")
     comment = row.get("comment")
     author = row.get("author", "Unbekannt")
     post_url = row.get("post_url")

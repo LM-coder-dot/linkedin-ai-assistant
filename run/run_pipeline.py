@@ -31,6 +31,7 @@ def main():
         comment = generate_comment(
             text=text,
             decision=decision,
+            relevance=relevance,
             keywords=analysis.get("keywords", []),
         )
         analysis["decision"] = decision

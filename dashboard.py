@@ -43,12 +43,12 @@ for idx, row in enumerate(posts):
     relevance = int(row.get("relevance") or 0)
     highlight = int(row.get("highlight") or 0)
     decision = row.get("decision", "N/A")
-    decision_reason = row.get("decision", "N/A")
+    decision_reason = row.get("decision_reason", "–")
     comment = row.get("comment")
     author = row.get("author", "Unbekannt")
     post_url = row.get("post_url")
-    keywords = row["keywords"].split(",") if row["keywords"] else []
-
+    raw_keywords = row.get("keywords")
+    keywords = [k.strip() for k in raw_keywords.split(",")] if raw_keywords else []
     relevance = int(relevance or 0)
     highlight = int(highlight or 0)
 
@@ -60,7 +60,8 @@ for idx, row in enumerate(posts):
 
     with st.container():
         st.markdown("---")
-        st.markdown(f"### {relevance_label} · `{decision.upper()}`")
+        icon = DECISION_COLORS.get(decision, "⚪")
+        st.markdown(f"### {icon} {decision.upper()} · {relevance_label}")
         st.write(text)
 
         st.markdown(
@@ -81,7 +82,19 @@ for idx, row in enumerate(posts):
 
         if comment:
             st.markdown("**💬 Kommentar-Vorschlag:**")
-            st.info(comment)
+            st.text_area(
+                "Kommentar bearbeiten",
+                value=comment,
+                key=f"comment_edit_{idx}",
+                height=120,
+            )
+
+            st.button(
+                "📋 Kommentar kopieren",
+                key=f"copy_comment_{idx}",
+                on_click=lambda c=comment: pyperclip.copy(c),
+            )
+
 
         if decision == "repost":
             repost_text = f"Starker Beitrag von {author}: {text[:200]}…"
@@ -97,13 +110,6 @@ for idx, row in enumerate(posts):
             f"### {DECISION_COLORS.get(decision, '⚪')} {decision.upper()}"
         )
 
-        DECISION_COLORS = {
-            "ignore": "⚪",
-            "like": "👍",
-            "comment": "💬",
-            "repost": "🔁",
-        }
-
         col1, col2 = st.columns(2)
         col1.metric("🧠 Relevance", relevance)
         col2.metric("🔥 Highlight", highlight)
@@ -114,12 +120,3 @@ def score_label(score):
     if score >= 5:
         return "👍 mittel"
     return "😐 niedrig"
-
-def test_decision_repost():
-    decision, _ = decide_post({
-        "relevance": 8,
-        "highlight": 8,
-        "keywords": ["AI", "Strategy"],
-        "language": "en",
-    })
-    assert decision == "repost"

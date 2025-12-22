@@ -9,6 +9,12 @@ if not SUPABASE_URL or not SUPABASE_ANON_KEY:
 
 supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+DECISION_COLORS = {
+    "auto_comment": "🟢",
+    "review": "🟡",
+    "ignore": "🔴",
+}
+
 def get_posts(decision=None, min_relevance=0):
     query = (
         supabase

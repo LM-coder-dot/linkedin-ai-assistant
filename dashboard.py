@@ -5,6 +5,12 @@ import pyperclip
 st.set_page_config(page_title="LinkedIn AI Assistant", layout="wide")
 st.title("📊 LinkedIn AI Assistant – Dashboard")
 
+DECISION_COLORS = {
+    "auto_comment": "🟢",
+    "review": "🟡",
+    "ignore": "🔴",
+}
+
 # --- Sidebar Filter ---
 st.sidebar.header("Filter")
 decision_filter = st.sidebar.selectbox(

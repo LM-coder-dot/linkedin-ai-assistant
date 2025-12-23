@@ -12,7 +12,7 @@ from analyzer.decision_engine import decide_post
 
 def main():
     collector = LinkedInCollector()
-    posts = collector.collect_feed()
+    posts = collector.collect_feed(limit=20)
 
     for post in posts:
         text = post["text"]

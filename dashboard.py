@@ -74,13 +74,21 @@ for idx, row in enumerate(posts):
         st.write(text)
 
         st.markdown(
-            f"""
-            **Autor:** {author or '–'}  
+            f""" 
             **Sprache:** {language}  
             **Relevanz:** {relevance}/10  
             **Highlight:** {highlight}/10  
             """
         )
+        cols = st.columns([1, 6])
+
+    with cols[0]:
+        if author_avatar:
+            st.image(author_avatar, width=48)
+
+    with cols[1]:
+        st.markdown(f"**{author}**")
+
 
         badge = "♻️ Duplicate" if is_duplicate else "🆕 Neu"
         st.caption(badge)

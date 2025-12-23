@@ -5,7 +5,7 @@ if not cookie:
     raise RuntimeError("LINKEDIN_COOKIE not set")
 
 class LinkedInCollector:
-    def collect_feed(self):
+    def collect_feed(self, limit=20):
         return [
             {
                 "text": "FinTech und AI verändern die Banking-Welt massiv.",

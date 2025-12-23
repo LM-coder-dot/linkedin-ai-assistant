@@ -35,6 +35,7 @@ def save_post(
     decision: str | None = None,
     decision_reason: str | None = None,
     comment: str | None = None,
+    language: str | None = None,
     author: str | None = None,
     post_url: str | None = None,
 ):
@@ -46,6 +47,7 @@ def save_post(
         "decision": decision,
         "decision_reason": decision_reason,
         "comment": comment,
+        "language": language,
         "author": author,
         "post_url": post_url,
     }

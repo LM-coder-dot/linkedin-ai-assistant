@@ -40,6 +40,7 @@ def save_post(
     decision_reason: str | None = None,
     comment: str | None = None,
     keywords: list[str] | None = None,
+    post_hash: str | None = None,
 ):
     data = {
         "text": text,
@@ -52,7 +53,15 @@ def save_post(
         "author": author,
         "post_url": post_url,
         "keywords": keywords,  # <-- LIST, kein Join
+        "post_hash": post_hash,
     }
 
     result = supabase.table("posts").insert(data).execute()
+
+    if result.error:
+        if "duplicate key" in str(result.error).lower():
+            print("⏭️ Duplicate post skipped")
+            return None
+        raise RuntimeError(result.error)
+
     return result

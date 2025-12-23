@@ -1,3 +1,4 @@
+import hashlib
 from dotenv import load_dotenv
 load_dotenv()
 from collector.linkedin_collector import LinkedInCollector
@@ -17,6 +18,7 @@ def main():
         text = post["text"]
         author = post.get("author")
         post_url = post.get("post_url")
+        post_hash = compute_post_hash(text)
 
         # 🔎 Relevanz
         relevance, keywords = relevance_score(text)
@@ -57,9 +59,14 @@ def main():
             comment=comment,
             author=author,
             post_url=post_url,
+            post_hash = compute_post_hash(text)
         )
 
     print("✅ Pipeline inkl. Decision Engine abgeschlossen.")
+
+def compute_post_hash(text: str) -> str:
+    normalized = " ".join(text.lower().split())
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
 if __name__ == "__main__":
     main()

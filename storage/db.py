@@ -9,12 +9,13 @@ if not SUPABASE_URL or not SUPABASE_ANON_KEY:
 
 supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+
 def get_posts(decision=None, min_relevance=0):
     query = (
         supabase
         .table("posts")
         .select(
-            "text, language, relevance, highlight, decision, comment, author, post_url, keywords"
+            "text, language, relevance, highlight, decision, decision_reason, comment, author, post_url, keywords"
         )
         .gte("relevance", min_relevance)
         .order("highlight", desc=True)
@@ -26,11 +27,13 @@ def get_posts(decision=None, min_relevance=0):
     response = query.execute()
     return response.data or []
 
+
 def save_post(
+    *,
     text: str,
     language: str,
     relevance: int,
-    highlight: str,
+    highlight: int,
     decision: str,
     author: str,
     post_url: str,
@@ -48,7 +51,8 @@ def save_post(
         "comment": comment,
         "author": author,
         "post_url": post_url,
-        "keywords": ",".join(keywords) if keywords else None,
+        "keywords": keywords,  # <-- LIST, kein Join
     }
 
-    supabase.table("posts").insert(data).execute()
+    result = supabase.table("posts").insert(data).execute()
+    return result

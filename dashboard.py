@@ -130,9 +130,19 @@ for idx, row in enumerate(posts):
             f"### {DECISION_COLORS.get(decision, '⚪')} {decision.upper()}"
         )
 
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([1, 8])
         col1.metric("🧠 Relevance", relevance)
         col2.metric("🔥 Highlight", highlight)
+        with col1:
+            if author_avatar:
+                st.image(author_avatar, width=48)
+            else:
+                st.markdown("👤")
+
+        with col2:
+            st.markdown(f"**{author}**")
+            st.write(text)
+        
 
 def score_label(score):
     if score >= 8:

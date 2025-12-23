@@ -42,21 +42,24 @@ def save_post(
     post_url: str | None = None,
 ):
     data = {
-        "text": text,
-        "relevance": relevance,
-        "highlight": highlight,
-        "keywords": ",".join(keywords) if keywords else None,
-        "decision": decision,
-        "decision_reason": decision_reason,
-        "comment": comment,
-        "language": language,
-        "post_hash": post_hash,
-        "is_duplicate": is_duplicate,
-        "author": author,
-        "post_url": post_url,
+        "text": str(text),
+        "language": str(language),
+        "relevance": int(relevance),
+        "highlight": int(highlight),
+        "keywords": keywords if isinstance(keywords, list) else [],
+        "decision": str(decision),
+        "decision_reason": str(decision_reason),
+        "comment": str(comment) if comment else None,
+        "is_duplicate": bool(is_duplicate),
+        "author": str(author) if author else None,
+        "post_url": str(post_url) if post_url else None,
+        "post_hash": str(post_hash),
     }
 
     try:
+        for k, v in data.items():
+            if callable(v):
+                raise TypeError(f"{k} is a function, not a value")
         result = supabase.table("posts").insert(data).execute()
         return result
 

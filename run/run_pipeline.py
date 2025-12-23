@@ -9,6 +9,9 @@ from recommender.decision_engine import decide_action
 from storage.db import save_post, post_exists
 from llm.comment_generator import generate_comment
 from analyzer.decision_engine import decide_post
+from utils.hashing import post_hash
+
+hash_value = post_hash(text)
 
 def main():
     collector = LinkedInCollector()
@@ -67,7 +70,7 @@ def main():
             is_duplicate=is_duplicate,
             author=author,
             post_url=post_url,
-            post_hash=compute_post_hash
+            post_hash=hash_value,
         )
 
     print("✅ Pipeline inkl. Decision Engine abgeschlossen.")

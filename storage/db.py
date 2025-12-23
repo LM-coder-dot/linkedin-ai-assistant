@@ -56,12 +56,13 @@ def save_post(
         "post_hash": post_hash,
     }
 
+try:
     result = supabase.table("posts").insert(data).execute()
-
-    if result.error:
-        if "duplicate key" in str(result.error).lower():
-            print("⏭️ Duplicate post skipped")
-            return None
-        raise RuntimeError(result.error)
-
     return result
+except Exception as e:
+    msg = str(e).lower()
+    if "duplicate" in msg or "unique constraint" in msg:
+        import logging
+        logging.info("Duplicate post skipped")
+        return None
+    raise

@@ -67,3 +67,14 @@ def save_post(
             logging.info("Duplicate post skipped")
             return None
         raise
+
+def post_exists(post_hash: str) -> bool:
+    result = (
+        supabase
+        .table("posts")
+        .select("id")
+        .eq("post_hash", post_hash)
+        .limit(1)
+        .execute()
+    )
+    return bool(result.data)

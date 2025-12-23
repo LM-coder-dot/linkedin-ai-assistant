@@ -31,6 +31,12 @@ def main():
 
         # 🧠 Entscheidung
         decision, decision_reason = decide_post(analysis)
+       
+        # --- Duplicate Override ---
+        if is_duplicate:
+            decision = "ignore"
+            decision_reason = "Duplicate post (same content already processed)"
+
         comment = generate_comment(
             text=text,
             decision=decision,

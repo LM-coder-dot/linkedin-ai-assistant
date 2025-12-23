@@ -1,6 +1,12 @@
 from playwright.sync_api import sync_playwright
 import os
 import time
+import hashlib
+
+
+def generate_post_hash(text: str, author: str | None = None) -> str:
+    base = (author or "") + "|" + text.strip()
+    return hashlib.sha256(base.encode("utf-8")).hexdigest()
 
 class LinkedInCollector:
     def __init__(self):

@@ -9,7 +9,7 @@ from recommender.decision_engine import decide_action
 from storage.db import save_post, post_exists
 from llm.comment_generator import generate_comment
 from analyzer.decision_engine import decide_post
-from utils.hashing import post_hash
+from utils.hashing import generate_post_hash
 
 hash_value = post_hash(text)
 
@@ -21,7 +21,7 @@ def main():
         text = post["text"]
         author = post.get("author")
         post_url = post.get("post_url")
-        post_hash = compute_post_hash(text)
+        post_hash = generate_post_hash(text=post_text, author=author)
         is_duplicate = post_exists(post_hash)
 
         # 🔎 Relevanz
@@ -70,7 +70,7 @@ def main():
             is_duplicate=is_duplicate,
             author=author,
             post_url=post_url,
-            post_hash=hash_value,
+            post_hash=post_hash,
         )
 
     print("✅ Pipeline inkl. Decision Engine abgeschlossen.")

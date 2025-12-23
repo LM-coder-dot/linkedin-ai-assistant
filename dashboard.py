@@ -13,6 +13,10 @@ DECISION_COLORS = {
 
 # --- Sidebar Filter ---
 st.sidebar.header("Filter")
+hide_duplicates = st.sidebar.checkbox(
+    "Duplikate ausblenden",
+    value=True
+)
 decision_filter = st.sidebar.selectbox(
     "Entscheidung",
     ["all", "ignore", "like", "comment", "repost"],
@@ -30,7 +34,11 @@ highlight_threshold = st.sidebar.slider(
 )
 
 # --- Posts abrufen ---
-posts = get_posts(decision=decision_filter, min_relevance=min_relevance)
+posts = get_posts(
+    decision=decision_filter,
+    min_relevance=min_relevance,
+    hide_duplicates=hide_duplicates,
+)
 st.write(f"### Gefundene Posts: {len(posts)}")
 
 if not posts:

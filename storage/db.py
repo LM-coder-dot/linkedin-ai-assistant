@@ -10,7 +10,7 @@ if not SUPABASE_URL or not SUPABASE_ANON_KEY:
 supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 
-def get_posts(decision=None, min_relevance=0):
+def get_posts(decision=None, min_relevance=0, hide_duplicates=True):
     query = (
         supabase
         .table("posts")
@@ -20,9 +20,14 @@ def get_posts(decision=None, min_relevance=0):
         .gte("relevance", min_relevance)
         .order("highlight", desc=True)
     )
+    if hide_duplicates:
+        query = query.eq("is_duplicate", False)
 
     if decision and decision != "all":
         query = query.eq("decision", decision)
+
+    query = query.gte("relevance", min_relevance)
+    query = query.order("created_at", desc=True)
 
     response = query.execute()
     return response.data or []

@@ -27,42 +27,37 @@ def get_posts(decision=None, min_relevance=0):
     response = query.execute()
     return response.data or []
 
-
 def save_post(
-    *,
     text: str,
-    language: str,
     relevance: int,
-    highlight: int,
-    decision: str,
-    author: str,
-    post_url: str,
+    highlight: int | None = None,
+    keywords: list[str] | None = None,
+    decision: str | None = None,
     decision_reason: str | None = None,
     comment: str | None = None,
-    keywords: list[str] | None = None,
-    post_hash: str | None = None,
+    author: str | None = None,
+    post_url: str | None = None,
 ):
     data = {
         "text": text,
-        "language": language,
         "relevance": relevance,
         "highlight": highlight,
+        "keywords": ",".join(keywords) if keywords else None,
         "decision": decision,
         "decision_reason": decision_reason,
         "comment": comment,
         "author": author,
         "post_url": post_url,
-        "keywords": keywords,  # <-- LIST, kein Join
-        "post_hash": post_hash,
     }
 
-try:
-    result = supabase.table("posts").insert(data).execute()
-    return result
-except Exception as e:
-    msg = str(e).lower()
-    if "duplicate" in msg or "unique constraint" in msg:
-        import logging
-        logging.info("Duplicate post skipped")
-        return None
-    raise
+    try:
+        result = supabase.table("posts").insert(data).execute()
+        return result
+
+    except Exception as e:
+        msg = str(e).lower()
+        if "duplicate" in msg or "unique constraint" in msg:
+            import logging
+            logging.info("Duplicate post skipped")
+            return None
+        raise

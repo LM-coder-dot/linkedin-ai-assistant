@@ -37,6 +37,7 @@ def save_post(
     comment: str | None = None,
     language: str | None = None,
     post_hash: str | None = None,
+    is_duplicate: bool = False,
     author: str | None = None,
     post_url: str | None = None,
 ):
@@ -50,6 +51,7 @@ def save_post(
         "comment": comment,
         "language": language,
         "post_hash": post_hash,
+        "is_duplicate": is_duplicate,
         "author": author,
         "post_url": post_url,
     }

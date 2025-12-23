@@ -57,6 +57,7 @@ def main():
             decision=analysis["decision"],
             decision_reason=analysis["decision_reason"],
             comment=comment,
+            is_duplicate=is_duplicate,
             author=author,
             post_url=post_url,
             post_hash = compute_post_hash(text)

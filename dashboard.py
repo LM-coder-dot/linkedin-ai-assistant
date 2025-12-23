@@ -49,6 +49,7 @@ for idx, row in enumerate(posts):
     post_url = row.get("post_url")
     raw_keywords = row.get("keywords")
     keywords = [k.strip() for k in raw_keywords.split(",")] if raw_keywords else []
+    is_duplicate = row.get("is_duplicate")
     relevance = int(relevance or 0)
     highlight = int(highlight or 0)
 
@@ -72,6 +73,9 @@ for idx, row in enumerate(posts):
             **Highlight:** {highlight}/10  
             """
         )
+
+        badge = "♻️ Duplicate" if is_duplicate else "🆕 Neu"
+        st.caption(badge)
 
         st.progress(min(relevance / 10, 1.0))
         st.success(f"Decision: {decision}")

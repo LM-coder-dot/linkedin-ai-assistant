@@ -13,13 +13,17 @@ from utils.hashing import generate_post_hash
 
 def main():
     collector = LinkedInCollector()
-    posts = collector.collect(limit=20)
+    PROFILE_URL = "https://www.linkedin.com/in/lucas-miguens-67622a19a/"
+    posts = collector.collect(
+        profile_url=PROFILE_URL,
+        limit=20
+    )
 
     for post in posts:
         text = post["text"]
         author = post.get("author")
         post_url = post.get("post_url")
-        post_hash = generate_post_hash(text=post_text, author=author)
+        post_hash = generate_post_hash(text, author)
         is_duplicate = post_exists(post_hash)
         hash_value = generate_post_hash(text, author)
 

@@ -11,11 +11,9 @@ from llm.comment_generator import generate_comment
 from analyzer.decision_engine import decide_post
 from utils.hashing import generate_post_hash
 
-hash_value = post_hash(text)
-
 def main():
     collector = LinkedInCollector()
-    posts = collector.collect_feed(limit=20)
+    posts = collector.collect(limit=20)
 
     for post in posts:
         text = post["text"]
@@ -23,6 +21,7 @@ def main():
         post_url = post.get("post_url")
         post_hash = generate_post_hash(text=post_text, author=author)
         is_duplicate = post_exists(post_hash)
+        hash_value = generate_post_hash(text, author)
 
         # 🔎 Relevanz
         relevance, keywords = relevance_score(text)

@@ -8,7 +8,7 @@ class LinkedInCollector:
         if not self.cookie:
             raise RuntimeError("LINKEDIN_COOKIE not set")
 
-    def collect(self, profile_url: str, limit: int = 5):
+    def collect(self, profile_url: str, limit: int = 20):
         posts = []
 
         with sync_playwright() as p:

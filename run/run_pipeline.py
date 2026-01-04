@@ -13,11 +13,7 @@ from utils.hashing import generate_post_hash
 
 def main():
     collector = LinkedInCollector()
-    PROFILE_URL = "https://www.linkedin.com/in/lucas-miguens-67622a19a/"
-    posts = collector.collect(
-        profile_url=PROFILE_URL,
-        limit=20
-    )
+    posts = collector.collect(limit=10)
 
     for post in posts:
         text = post["text"]
@@ -73,7 +69,7 @@ def main():
             is_duplicate=is_duplicate,
             author=author,
             post_url=post_url,
-            post_hash=post_hash,
+            post_hash=hash_value,
         )
 
     print("✅ Pipeline inkl. Decision Engine abgeschlossen.")
